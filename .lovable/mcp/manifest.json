@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "sdk_version": "3.1.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ggxzehiddawsoblgzkxh.supabase.co/auth/v1",
+    "require_oauth_client_claim": true,
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "los-de-ajuera",
+      "version": "0.1.0",
+      "title": "Los-de-ajuera"
+    },
+    "tools": [
+      {
+        "name": "list_products",
+        "title": "Consultar productos",
+        "description": "Consultar el catálogo de productos y precios en euros, opcionalmente por categoría.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Categoría; omitir para consultar todo el catálogo.",
+              "type": "string",
+              "enum": [
+                "carnes",
+                "empanadas",
+                "pastas",
+                "vinos"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

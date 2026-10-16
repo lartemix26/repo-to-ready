@@ -7,57 +7,7 @@ import familia from "@/assets/familia.jpg.asset.json";
 import manos from "@/assets/manos.jpg.asset.json";
 import recetas from "@/assets/recetas.jpg.asset.json";
 import pizza from "@/assets/pizza.jpg.asset.json";
-import milanesa from "@/assets/milanesa-product.jpg.asset.json";
-import empanadas from "@/assets/empanadas-product.jpg.asset.json";
-import raviolones from "@/assets/raviolones-product.jpg.asset.json";
-import asado from "@/assets/asado-cut.jpg.asset.json";
-import vacio from "@/assets/vacio-cut.jpg.asset.json";
-import entrana from "@/assets/entrana-cut.jpg.asset.json";
-import bife from "@/assets/bife-chorizo-cut.jpg.asset.json";
-import peceto from "@/assets/peceto-cut.jpg.asset.json";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Los de Ajuera — Comida argentina lista para cocinar en Valencia" },
-      { name: "description", content: "Empanadas, milanesas, cortes argentinos y pastas caseras, listos para cocinar. Pedidos en Valencia." },
-      { property: "og:title", content: "Los de Ajuera — Comida argentina lista para cocinar" },
-      { property: "og:description", content: "Sabores que te llevan a casa. Empanadas, milanesas, carnes y pastas hechas con amor." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Index,
-});
-
-type Cat = "carnes" | "empanadas" | "pastas" | "vinos";
-type Product = { id: string; cat: Cat; name: string; desc: string; price: number; unit?: string; tag: string; img: string };
-
-const PRODUCTS: Product[] = [
-  { id: "mil-pollo", cat: "carnes", name: "Milanesas de pollo", desc: "Empanadas y listas para cocinar. Pack de 720 g.", price: 10.8, tag: "Listas para cocinar", img: milanesa.url },
-  { id: "mil-ternera", cat: "carnes", name: "Milanesas de ternera", desc: "Rebozado casero, finito y dorado. Para horno o sartén.", price: 12.5, tag: "Hechas en casa", img: "https://images.pexels.com/photos/6941010/pexels-photo-6941010.jpeg?auto=compress&cs=tinysrgb&w=600" },
-  { id: "tira", cat: "carnes", name: "Asado de tira", desc: "El corte que reúne a todos. Porción de 700 g.", price: 15.9, tag: "Parrilla", img: asado.url },
-  { id: "asado", cat: "carnes", name: "Asado", desc: "Corte argentino para una parrilla con tiempo y buena compañía.", price: 11.99, unit: "1 kg", tag: "Parrilla", img: asado.url },
-  { id: "vacio", cat: "carnes", name: "Vacío", desc: "Jugoso, sabroso y perfecto para cocinar lentamente.", price: 13.99, unit: "1 kg", tag: "Parrilla", img: vacio.url },
-  { id: "entrana", cat: "carnes", name: "Entraña", desc: "Un corte tierno e intenso para disfrutar vuelta y vuelta.", price: 13.99, unit: "1 kg", tag: "Parrilla", img: entrana.url },
-  { id: "bife", cat: "carnes", name: "Bife de chorizo", desc: "El clásico grueso y jugoso que pide una buena brasa.", price: 20.9, unit: "1 kg", tag: "Premium", img: bife.url },
-  { id: "peceto", cat: "carnes", name: "Peceto", desc: "Corte magro y versátil para horno, vitel toné o milanesas.", price: 16.45, unit: "1 kg", tag: "Premium", img: peceto.url },
-  { id: "emp-art", cat: "empanadas", name: "Empanadas artesanales", desc: "Hechas en casa, con ingredientes seleccionados.", price: 8.9, tag: "Hechas con amor", img: empanadas.url },
-  { id: "emp-carne", cat: "empanadas", name: "Empanada de carne", desc: "Carne cortada a cuchillo, cebolla, pimentón y comino.", price: 2.4, unit: "unidad", tag: "La clásica", img: "https://images.pexels.com/photos/5848712/pexels-photo-5848712.jpeg?auto=compress&cs=tinysrgb&w=600" },
-  { id: "raviolones", cat: "pastas", name: "Raviolones de espinaca y ricotta", desc: "Pasta fresca congelada. Una receta suave para compartir.", price: 9.5, tag: "Pasta fresca", img: raviolones.url },
-  { id: "malbec", cat: "vinos", name: "Malbec de la casa", desc: "Mendoza, 750 ml. Fruta madura y un final suave.", price: 9.7, tag: "Mendoza", img: "https://images.pexels.com/photos/2912108/pexels-photo-2912108.jpeg?auto=compress&cs=tinysrgb&w=600" },
-];
-
-const CATS: { id: Cat; label: string }[] = [
-  { id: "carnes", label: "Carnes" },
-  { id: "empanadas", label: "Empanadas" },
-  { id: "pastas", label: "Pastas" },
-  { id: "vinos", label: "Vinos" },
-];
-
-const eur = (n: number) => n.toLocaleString("es-ES", { style: "currency", currency: "EUR" });
-
-function Index() {
+import { CATS, PRODUCTS, eur, function Index() {
   const [cat, setCat] = useState<Cat>("carnes");
   const [bag, setBag] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
@@ -75,6 +25,30 @@ function Index() {
       return c;
     });
   const bagText = items.map((p) => `${bag[p.id]} x ${p.name}`).join("\n");
+
+  function selectCategory(value: unknown) {
+    const selected = CATS.find((entry) => entry.id === value);
+    if (!selected) throw new Error("Categoría no válida.");
+    setCat(selected.id);
+  }
+  const visible = PRODUCTS.filter((product) => product.cat === cat);
+  useWebMCP({
+    name: "list_visible_products",
+    description: "Consultar los productos y precios de la categoría que aparece en pantalla.",
+    annotations: { readOnlyHint: true },
+    execute: () => runWebMCPTool("list_visible_products", () => visible.map((p) => `${p.id}: ${p.name} — ${eur(p.price)}${p.unit ? ` / ${p.unit}` : ""}`).join("\n")),
+  });
+  useWebMCP({
+    name: "filter_products",
+    description: "Cambiar la categoría visible de productos.",
+    inputSchema: { type: "object", properties: { category: { type: "string", enum: CATS.map((c) => c.id), description: "Categoría de productos." } }, required: ["category"] },
+    execute: ({ category }: { category: string }) => runWebMCPTool("filter_products", () => { selectCategory(category); return `Categoría: ${category}.`; }),
+  });
+  useWebMCP({
+    name: "open_bag",
+    description: "Abrir la bolsa del usuario en pantalla, sin enviar ningún pedido.",
+    execute: () => runWebMCPTool("open_bag", () => { setOpen(true); return "Bolsa abierta."; }),
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -128,14 +102,14 @@ function Index() {
           <p className="mt-3 max-w-lg text-muted-foreground">Elegí tus favoritos, combiná y recibí el sabor de una cocina tranquila.</p>
           <div className="mt-8 flex gap-2 overflow-x-auto pb-2">
             {CATS.map((c) => (
-              <button key={c.id} onClick={() => setCat(c.id)}
+              <button key={c.id} onClick={() => selectCategory(c.id)}
                 className={`shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition ${cat === c.id ? "bg-ink text-ink-foreground" : "border border-border bg-card hover:border-ink"}`}>
                 {c.label}
               </button>
             ))}
           </div>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {PRODUCTS.filter((p) => p.cat === cat).map((p) => (
+            {visible.map((p) => (
               <article key={p.id} className="flex flex-col overflow-hidden rounded-2xl bg-card shadow-card">
                 <div className="relative">
                   <img src={p.img} alt={p.name} loading="lazy" className="aspect-[4/3] w-full object-cover" />
