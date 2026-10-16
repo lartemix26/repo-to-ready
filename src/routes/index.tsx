@@ -64,8 +64,8 @@ function Index() {
   const [sent, setSent] = useState(false);
 
   const items = PRODUCTS.filter((p) => bag[p.id]);
-  const count = items.reduce((s, p) => s + bag[p.id], 0);
-  const total = items.reduce((s, p) => s + p.price * bag[p.id], 0);
+  const count = items.reduce((s, p) => s + (bag[p.id] ?? 0), 0);
+  const total = items.reduce((s, p) => s + p.price * (bag[p.id] ?? 0), 0);
   const change = (id: string, d: number) =>
     setBag((b) => {
       const n = Math.max(0, (b[id] ?? 0) + d);
@@ -82,7 +82,7 @@ function Index() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:h-20">
           <a href="#inicio" className="flex items-center">
-            <img src={logo.url} alt="Los de Ajuera" className="h-12 w-auto mix-blend-multiply md:h-16" />
+            <img src={logo.url} alt="Los de Ajuera" className="h-14 w-auto mix-blend-multiply md:h-16" />
           </a>
           <nav className="hidden gap-8 text-sm font-medium md:flex">
             <a href="#productos" className="hover:text-primary">Productos</a>
