@@ -6,18 +6,25 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 //import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react(), cloudflare()],
+  plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tanstackStart({
+      server: { entry: "server" },
+    }),
+    react(),
+  ],
 });
-
-export default defineConfig({
-  tanstackStart: {
+//export default defineConfig({
+//  tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
-    server: { entry: "server" },
-  },
-});
+ //   server: { entry: "server" },
+//  },
+//});
+
 
