@@ -74,8 +74,13 @@
     "vite-tsconfig-paths": "^6.0.2",
     "zod": "^3.25.76"
   },
-  
- "devDependencies": {
+
+  {
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^6.0.0",
+    "wrangler": "^4.0.0"
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "2.26.5",
     "@testing-library/jest-dom": "^6.6.0",
