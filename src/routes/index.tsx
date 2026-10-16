@@ -100,7 +100,8 @@ function Index() {
       {/* Hero */}
       <section id="inicio" className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-14 pt-8 md:grid-cols-2 md:gap-12 md:pt-16">
         <div className="order-2 md:order-1">
-          <p className="eyebrow">Hecho en casa · hecho con amor</p>
+          <img src={logo.url} alt="Los de Ajuera" className="h-24 w-auto mix-blend-multiply sm:h-28 lg:h-32" />
+          <p className="eyebrow mt-6">Hecho en casa · hecho con amor</p>
           <h1 className="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
             Comida argentina <em className="font-medium text-primary">lista para cocinar</em>
           </h1>
